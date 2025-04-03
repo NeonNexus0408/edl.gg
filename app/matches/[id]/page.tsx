@@ -108,7 +108,7 @@ export default function MatchPage({ params }: Props) {
   };
 
   // Validate the ID parameter
-  const id = validateParam(params.id, (id) => /^\d+$/.test(id));
+  const id = validateParam(params?.id, (id) => /^\d+$/.test(id));
 
   // In a real app, you would fetch the match data based on the ID
   // and use checkResourceExists to verify the match exists

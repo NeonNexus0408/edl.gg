@@ -1,12 +1,15 @@
+"use client"
+
 import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
 import { Calendar, Filter, ChevronDown } from "lucide-react"
+import { useState,useEffect } from "react"
 
-export const metadata: Metadata = {
-  title: "Matches - EDL.GG",
-  description: "Upcoming and live CS2 matches from tournaments around the world.",
-}
+// export const metadata: Metadata = {
+//   title: "Matches - EDL.GG",
+//   description: "Upcoming and live CS2 matches from tournaments around the world.",
+// }
 
 // Mock data for matches
 const liveMatches = [
@@ -82,6 +85,20 @@ const recentResults = [
 ]
 
 export default function MatchesPage() {
+
+  const [liveMatch, setLiveMatch] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchLiveMatchData = async () => {
+      const response = await fetch("https://api.deadlock-api.com/v1/matches/active");
+      const data = await response.json();
+      const temp= data.slice(0,5);
+      setLiveMatch(temp);
+    };
+
+    fetchLiveMatchData();
+  });
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -108,26 +125,26 @@ export default function MatchesPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {liveMatches.map((match) => (
+          {liveMatch.map((match:any) => (
             <Link
-              key={match.id}
-              href={`/matches/${match.id}`}
+              key={match.match_id}
+              href={`/matches/${match.match_id}`}
               className="bg-[#2d3844] rounded-md overflow-hidden hover:bg-[#3d4957] transition-colors"
             >
               <div className="p-3 bg-[#c01e1e] text-white font-semibold flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>
-                  <span>{match.status}</span>
+                  <span>{"LIVE"}</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-sm mr-1">{match.map}</span>
-                  <div className="flex">
+                  {/* <span className="text-sm mr-1">{match.map}</span> */}
+                  {/* <div className="flex">
                     {Array.from({ length: match.stars }).map((_, i) => (
                       <span key={i} className="text-yellow-400">
                         ★
                       </span>
                     ))}
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -135,32 +152,32 @@ export default function MatchesPage() {
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center">
                     <Image
-                      src={match.team1.logo || "/placeholder.svg"}
-                      alt={match.team1.name}
+                      src={match.net_worth_team_0.logo || "/placeholder.svg"}
+                      alt={match.net_worth_team_0}
                       width={30}
                       height={30}
                       className="rounded-full mr-2"
                     />
-                    <span className="font-medium">{match.team1.name}</span>
+                    <span className="font-medium">{match.net_worth_team_0}</span>
                   </div>
-                  <span className="text-xl font-bold">{match.team1.score}</span>
+                  <span className="text-xl font-bold">{match.objectives_mask_team1}</span>
                 </div>
 
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center">
                     <Image
-                      src={match.team2.logo || "/placeholder.svg"}
-                      alt={match.team2.name}
+                      src={match.net_worth_team_1.logo || "/placeholder.svg"}
+                      alt={match.net_worth_team_1}
                       width={30}
                       height={30}
                       className="rounded-full mr-2"
                     />
-                    <span className="font-medium">{match.team2.name}</span>
+                    <span className="font-medium">{match.net_worth_team_1}</span>
                   </div>
-                  <span className="text-xl font-bold">{match.team2.score}</span>
+                  <span className="text-xl font-bold">{match.objectives_mask_team1}</span>
                 </div>
 
-                <div className="text-sm text-gray-400">{match.event}</div>
+                <div className="text-sm text-gray-400">{match.region_mode_parsed}</div>
               </div>
             </Link>
           ))}
@@ -299,4 +316,3 @@ export default function MatchesPage() {
     </div>
   )
 }
-
