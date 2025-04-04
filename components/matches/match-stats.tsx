@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { isEmpty } from "@/lib/utils";
 
 type Player = {
   name: string;
@@ -31,12 +32,67 @@ type MatchStatsProps = {
 export default function MatchStats({ team1, team2, maps }: MatchStatsProps) {
   const [activeMap, setActiveMap] = useState("All maps");
   const [activeSide, setActiveSide] = useState("Both");
+  const [imageData, setImageData] = useState<any>([]);
+  const [accountData, setAccountData] = useState<any>([]);
 
   const sides = ["Both", "Terrorist", "Counter-Terrorist"];
 
   useEffect(() => {
-    console.log(team1);
-  }, []);
+    if (!isEmpty(team1)) fetchImages();
+  }, [team1]);
+
+  const fetchImages = async () => {
+    console.log("team1!!!!!!", team1);
+    let temp: any[] = [],
+      tempUser: any[] = [];
+    // team1.players.map((player: any) =>
+    for (const player of team1.players) {
+      const hero = await fetch(
+        "https://assets.deadlock-api.com/v2/heroes/" +
+          player.hero_id +
+          "?language=english"
+      );
+      const hero_json = await hero.json();
+      console.log(hero_json);
+      const accountName = await fetch(
+        `https://api.deadlock-api.com/v1/commands/variables/resolve?region=Europe&account_id=${player?.account_id}&variables=leaderboard_rank_img%2Cleaderboard_place%2Cwins_losses_today%2Ctotal_kd%2Chours_played%2Csteam_account_name`
+      );
+      const accountName_json = await accountName.json();
+      tempUser.push({
+        account_id: player.account_id,
+        account_name: accountName_json.steam_account_name,
+      });
+      console.log(accountName_json);
+      const hero_image = hero_json.images.icon_hero_card;
+      temp.push({ id: player.hero_id, image: hero_image });
+      console.log(temp, "**********");
+      console.log(tempUser, "**********temp user");
+    }
+    for (const player of team2.players) {
+      const hero = await fetch(
+        "https://assets.deadlock-api.com/v2/heroes/" +
+          player.hero_id +
+          "?language=english"
+      );
+      const hero_json = await hero.json();
+      console.log(hero_json);
+      const accountName = await fetch(
+        `https://api.deadlock-api.com/v1/commands/variables/resolve?region=Europe&account_id=${player?.account_id}&variables=leaderboard_rank_img%2Cleaderboard_place%2Cwins_losses_today%2Ctotal_kd%2Chours_played%2Csteam_account_name`
+      );
+      const accountName_json = await accountName.json();
+      tempUser.push({
+        account_id: player.account_id,
+        account_name: accountName_json.steam_account_name,
+      });
+      console.log(accountName_json);
+      const hero_image = hero_json.images.icon_hero_card;
+      temp.push({ id: player.hero_id, image: hero_image });
+      console.log(temp, "**********");
+      console.log(tempUser, "**********temp user");
+    }
+    setAccountData(tempUser);
+    setImageData(temp);
+  };
 
   return (
     <div className="bg-[#2d3844] rounded-md overflow-hidden">
@@ -63,7 +119,7 @@ export default function MatchStats({ team1, team2, maps }: MatchStatsProps) {
       </div>
 
       <div className="flex border-b border-[#3d4957] bg-[#232c38]">
-        {maps.map((map) => (
+        {maps?.map((map) => (
           <button
             key={map}
             className={`px-4 py-2 text-sm ${
@@ -92,7 +148,7 @@ export default function MatchStats({ team1, team2, maps }: MatchStatsProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-[#232c38]">
-              <th className="text-left p-3 font-semibold" colSpan={2}>
+              <th className="text-left p-3 font-semibold w-[300px]" colSpan={2}>
                 <div className="flex items-center">
                   <Image
                     src={team1.logo || "/placeholder.svg"}
@@ -106,8 +162,8 @@ export default function MatchStats({ team1, team2, maps }: MatchStatsProps) {
               </th>
               <th className="p-3 font-semibold text-center">K-D</th>
               <th className="p-3 font-semibold text-center">+/-</th>
-              <th className="p-3 font-semibold text-center">ADR</th>
-              <th className="p-3 font-semibold text-center">KAST</th>
+              <th className="p-3 font-semibold text-center">KDR</th>
+              <th className="p-3 font-semibold text-center">Assist</th>
               <th className="p-3 font-semibold text-center">
                 Rating
                 <br />
@@ -118,47 +174,75 @@ export default function MatchStats({ team1, team2, maps }: MatchStatsProps) {
           <tbody>
             {team1.players
               // .find((val: any) => val.team == 0)
-              .map((player: any, index: any) => (
-                <tr
-                  key={index}
-                  className={`border-b border-[#3d4957] ${
-                    index % 2 === 0 ? "bg-[#2d3844]" : "bg-[#263440]"
-                  } hover:bg-[#3d4957]`}
-                >
-                  <td className="p-3 w-8">
-                    <div className="flex justify-center">
-                      <Image
-                        src={`/placeholder.svg?height=20&width=20`}
-                        alt={`${player.flag} flag`}
-                        width={20}
-                        height={20}
-                        className="rounded-sm"
-                      />
-                    </div>
-                  </td>
-                  <td className="p-3 text-left">
-                    <Link href="#" className="hover:text-[#4c9fd8]">
-                      {player?.account_id}
-                    </Link>
-                  </td>
-                  <td className="p-3 text-center">
-                    {player.kills}-{player.deaths}
-                  </td>
-                  <td
-                    className={`p-3 text-center ${
-                      player.kills - player.deaths > 0
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
+              .map((player: any, index: any) => {
+                return (
+                  <tr
+                    key={index}
+                    className={`border-b border-[#3d4957] ${
+                      index % 2 === 0 ? "bg-[#2d3844]" : "bg-[#263440]"
+                    } hover:bg-[#3d4957]`}
                   >
-                    {player.kills - player.deaths > 0 && "+"}
-                    {player.kills - player.deaths}
-                  </td>
-                  {/* <td className="p-3 text-center">{player.adr}</td>
+                    <td className="p-3 w-14">
+                      <div className="flex justify-center">
+                        <Image
+                          src={`${
+                            imageData?.find(
+                              (val: any) => val.id == player.hero_id
+                            )?.image
+                          }?height=100&width=100`}
+                          alt={`${player.flag} flag`}
+                          width={100}
+                          height={100}
+                          className="rounded-xl"
+                        />
+                      </div>
+                    </td>
+                    <td className="p-3 text-left">
+                      <Link href="#" className="hover:text-[#4c9fd8]">
+                        {
+                          accountData?.find(
+                            (val: any) => val.account_id == player.account_id
+                          )?.account_name
+                        }
+                      </Link>
+                    </td>
+                    <td className="p-3 text-center">
+                      {player.kills}-{player.deaths}
+                    </td>
+                    <td
+                      className={`p-3 text-center ${
+                        player.kills - player.deaths > 0
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {player.kills - player.deaths > 0 && "+"}
+                      {player.kills - player.deaths}
+                    </td>
+                    <td
+                      className={`p-3 text-center ${
+                        player.kills - player.deaths > 0
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {(player.kills / player.deaths).toFixed(2)}
+                    </td>
+                    <td
+                      className={`p-3 text-center ${
+                        player.kills - player.deaths > 0
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {player.assists}
+                    </td>
+                    {/* <td className="p-3 text-center">{player.adr}</td>
                 <td className="p-3 text-center">{player.kast}</td>
                 <td className="p-3 text-center">{player.rating}</td> */}
-                </tr>
-              ))}
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
@@ -168,7 +252,7 @@ export default function MatchStats({ team1, team2, maps }: MatchStatsProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-[#232c38]">
-              <th className="text-left p-3 font-semibold" colSpan={2}>
+              <th className="text-left p-3 font-semibold w-[300px]" colSpan={2}>
                 <div className="flex items-center">
                   <Image
                     src={team2.logo || "/placeholder.svg"}
@@ -182,8 +266,8 @@ export default function MatchStats({ team1, team2, maps }: MatchStatsProps) {
               </th>
               <th className="p-3 font-semibold text-center">K-D</th>
               <th className="p-3 font-semibold text-center">+/-</th>
-              <th className="p-3 font-semibold text-center">ADR</th>
-              <th className="p-3 font-semibold text-center">KAST</th>
+              <th className="p-3 font-semibold text-center">KDR</th>
+              <th className="p-3 font-semibold text-center">Assist</th>
               <th className="p-3 font-semibold text-center">
                 Rating
                 <br />
@@ -192,44 +276,77 @@ export default function MatchStats({ team1, team2, maps }: MatchStatsProps) {
             </tr>
           </thead>
           <tbody>
-            {team2.players.map((player, index) => (
-              <tr
-                key={index}
-                className={`border-b border-[#3d4957] ${
-                  index % 2 === 0 ? "bg-[#2d3844]" : "bg-[#263440]"
-                } hover:bg-[#3d4957]`}
-              >
-                <td className="p-3 w-8">
-                  <div className="flex justify-center">
-                    <Image
-                      src={`/placeholder.svg?height=20&width=20`}
-                      alt={`${player.flag} flag`}
-                      width={20}
-                      height={20}
-                      className="rounded-sm"
-                    />
-                  </div>
-                </td>
-                <td className="p-3 text-left">
-                  <Link href="#" className="hover:text-[#4c9fd8]">
-                    {player.name}
-                  </Link>
-                </td>
-                <td className="p-3 text-center">{player.kd}</td>
-                <td
-                  className={`p-3 text-center ${
-                    player.plusMinus.startsWith("+")
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {player.plusMinus}
-                </td>
-                <td className="p-3 text-center">{player.adr}</td>
+          {team2.players
+              // .find((val: any) => val.team == 0)
+              .map((player: any, index: any) => {
+                return (
+                  <tr
+                    key={index}
+                    className={`border-b border-[#3d4957] ${
+                      index % 2 === 0 ? "bg-[#2d3844]" : "bg-[#263440]"
+                    } hover:bg-[#3d4957]`}
+                  >
+                    <td className="p-3 w-14">
+                      <div className="flex justify-center">
+                        <Image
+                          src={`${
+                            imageData?.find(
+                              (val: any) => val.id == player.hero_id
+                            )?.image
+                          }?height=100&width=100`}
+                          alt={`${player.flag} flag`}
+                          width={100}
+                          height={100}
+                          className="rounded-xl"
+                        />
+                      </div>
+                    </td>
+                    <td className="p-3 text-left">
+                      <Link href="#" className="hover:text-[#4c9fd8]">
+                        {
+                          accountData?.find(
+                            (val: any) => val.account_id == player.account_id
+                          )?.account_name
+                        }
+                      </Link>
+                    </td>
+                    <td className="p-3 text-center">
+                      {player.kills}-{player.deaths}
+                    </td>
+                    <td
+                      className={`p-3 text-center ${
+                        player.kills - player.deaths > 0
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {player.kills - player.deaths > 0 && "+"}
+                      {player.kills - player.deaths}
+                    </td>
+                    <td
+                      className={`p-3 text-center ${
+                        player.kills - player.deaths > 0
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {(player.kills / player.deaths).toFixed(2)}
+                    </td>
+                    <td
+                      className={`p-3 text-center ${
+                        player.kills - player.deaths > 0
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {player.assists}
+                    </td>
+                    {/* <td className="p-3 text-center">{player.adr}</td>
                 <td className="p-3 text-center">{player.kast}</td>
-                <td className="p-3 text-center">{player.rating}</td>
-              </tr>
-            ))}
+                <td className="p-3 text-center">{player.rating}</td> */}
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>

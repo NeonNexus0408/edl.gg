@@ -90,7 +90,7 @@ export default function MatchesPage() {
 
   useEffect(() => {
     const fetchLiveMatchData = async () => {
-      const response = await fetch("https://api.deadlock-api.com/v1/matches/active");
+      const response = await fetch("https://api.deadlock-api.com/v1/matches/recently-fetched");
       const data = await response.json();
       const temp= data.slice(0,5);
       setLiveMatch(temp);
@@ -121,7 +121,7 @@ export default function MatchesPage() {
       {/* Live Matches */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Live Matches</h2>
+          <h2 className="text-xl font-semibold">Recent Matches</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -152,7 +152,7 @@ export default function MatchesPage() {
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center">
                     <Image
-                      src={match.net_worth_team_0.logo || "/placeholder.svg"}
+                      src={match.net_worth_team_0 || "/placeholder.svg"}
                       alt={match.net_worth_team_0}
                       width={30}
                       height={30}
@@ -166,7 +166,7 @@ export default function MatchesPage() {
                 <div className="flex justify-between items-center mb-3">
                   <div className="flex items-center">
                     <Image
-                      src={match.net_worth_team_1.logo || "/placeholder.svg"}
+                      src={match.net_worth_team_1 || "/placeholder.svg"}
                       alt={match.net_worth_team_1}
                       width={30}
                       height={30}

@@ -33,6 +33,7 @@ export default function MatchPage({ params }: Props) {
   const [matchInfo, setMatchInfo] = useState<any>({});
   const [team0, setTeam0] = useState<any>([]);
   const [team1, setTeam1] = useState<any>([]);
+  const [meta, setMeta] = useState<any>([]);
 
   useEffect(() => {
     fetchData();
@@ -44,6 +45,7 @@ export default function MatchPage({ params }: Props) {
     if (!isEmpty(matchInfo?.players)) {
       const team0List = [],
         team1List = [];
+      console.log(matchInfo?.players,"This is players");
       for (const value of matchInfo?.players) {
         if (value.team == 0) team0List.push(value);
         else if (value.team == 1) team1List.push(value);
@@ -52,13 +54,14 @@ export default function MatchPage({ params }: Props) {
       setTeam1(team1List);
       console.log(team0List, team1List);
     }
+    console.log(matchInfo,"This is match");
     // console.log((matchInfo?.players).find((val: any) => val.team != 2));
     console.log(matchInfo?.players);
   }, [matchInfo]);
 
   const fetchData = async () => {
     const response = await fetch(
-      "https://api.deadlock-api.com/v1/matches/34080213/metadata",
+      `https://api.deadlock-api.com/v1/matches/${params.id}/metadata`,
       {
         // learn more about this API here: https://graphql-pokemon2.vercel.app/
         method: "GET",
@@ -108,124 +111,124 @@ export default function MatchPage({ params }: Props) {
   };
 
   // Validate the ID parameter
-  const id = validateParam(params?.id, (id) => /^\d+$/.test(id));
+  // const id = validateParam(params?.id, (id) => /^\d+$/.test(id));
 
   // In a real app, you would fetch the match data based on the ID
   // and use checkResourceExists to verify the match exists
-  const matchData = {
-    id: id,
-    team1: {
-      name: "Liquid",
-      logo: "/placeholder.svg?height=80&width=80",
-      score: 0,
-      players: [
-        {
-          name: "Justin 'jks' Savage",
-          flag: "au",
-          kd: "37-28",
-          plusMinus: "+9",
-          adr: "91.1",
-          kast: "70.7%",
-          rating: "1.24",
-        },
-        {
-          name: "Guy 'NertZ' Iluz",
-          flag: "il",
-          kd: "28-30",
-          plusMinus: "-2",
-          adr: "70.6",
-          kast: "75.6%",
-          rating: "0.97",
-        },
-        {
-          name: "Roland 'ultimate' Tomkowiak",
-          flag: "pl",
-          kd: "24-30",
-          plusMinus: "-6",
-          adr: "69.3",
-          kast: "65.9%",
-          rating: "0.92",
-        },
-        {
-          name: "Russel 'Twistzz' Van Dulken",
-          flag: "ca",
-          kd: "22-30",
-          plusMinus: "-8",
-          adr: "71.1",
-          kast: "65.9%",
-          rating: "0.87",
-        },
-        {
-          name: "Keith 'NAF' Markovic",
-          flag: "ca",
-          kd: "22-30",
-          plusMinus: "-8",
-          adr: "63.5",
-          kast: "61.0%",
-          rating: "0.74",
-        },
-      ],
-    },
-    team2: {
-      name: "The MongolZ",
-      logo: "/placeholder.svg?height=80&width=80",
-      score: 2,
-      players: [
-        {
-          name: "Garidmagnai 'bLitz' Byambasuren",
-          flag: "mn",
-          kd: "33-24",
-          plusMinus: "+9",
-          adr: "90.6",
-          kast: "75.6%",
-          rating: "1.31",
-        },
-        {
-          name: "Munkhbold 'Senzu' Azbayar",
-          flag: "mn",
-          kd: "40-29",
-          plusMinus: "+11",
-          adr: "82.2",
-          kast: "65.9%",
-          rating: "1.25",
-        },
-        {
-          name: "Usukhbayar '910' Banzragch",
-          flag: "mn",
-          kd: "31-24",
-          plusMinus: "+7",
-          adr: "86.8",
-          kast: "73.2%",
-          rating: "1.23",
-        },
-        {
-          name: "Ayush 'mzinho' Batbold",
-          flag: "mn",
-          kd: "25-28",
-          plusMinus: "-3",
-          adr: "70.9",
-          kast: "61.0%",
-          rating: "1.03",
-        },
-        {
-          name: "Sodbayar 'Techno' Munkhbold",
-          flag: "mn",
-          kd: "17-28",
-          plusMinus: "+11",
-          adr: "54.0",
-          kast: "61.0%",
-          rating: "0.75",
-        },
-      ],
-    },
-    event: {
-      name: "BLAST Open Lisbon 2025",
-      date: "23rd of March 2025",
-      status: "Match over",
-    },
-    score: "13:55",
-    maps: ["All maps", "Anubis", "Ancient"],
-  };
+  // const matchData = {
+  //   id: id,
+  //   team1: {
+  //     name: "Liquid",
+  //     logo: "/placeholder.svg?height=80&width=80",
+  //     score: 0,
+  //     players: [
+  //       {
+  //         name: "Justin 'jks' Savage",
+  //         flag: "au",
+  //         kd: "37-28",
+  //         plusMinus: "+9",
+  //         adr: "91.1",
+  //         kast: "70.7%",
+  //         rating: "1.24",
+  //       },
+  //       {
+  //         name: "Guy 'NertZ' Iluz",
+  //         flag: "il",
+  //         kd: "28-30",
+  //         plusMinus: "-2",
+  //         adr: "70.6",
+  //         kast: "75.6%",
+  //         rating: "0.97",
+  //       },
+  //       {
+  //         name: "Roland 'ultimate' Tomkowiak",
+  //         flag: "pl",
+  //         kd: "24-30",
+  //         plusMinus: "-6",
+  //         adr: "69.3",
+  //         kast: "65.9%",
+  //         rating: "0.92",
+  //       },
+  //       {
+  //         name: "Russel 'Twistzz' Van Dulken",
+  //         flag: "ca",
+  //         kd: "22-30",
+  //         plusMinus: "-8",
+  //         adr: "71.1",
+  //         kast: "65.9%",
+  //         rating: "0.87",
+  //       },
+  //       {
+  //         name: "Keith 'NAF' Markovic",
+  //         flag: "ca",
+  //         kd: "22-30",
+  //         plusMinus: "-8",
+  //         adr: "63.5",
+  //         kast: "61.0%",
+  //         rating: "0.74",
+  //       },
+  //     ],
+  //   },
+  //   team2: {
+  //     name: "The MongolZ",
+  //     logo: "/placeholder.svg?height=80&width=80",
+  //     score: 2,
+  //     players: [
+  //       {
+  //         name: "Garidmagnai 'bLitz' Byambasuren",
+  //         flag: "mn",
+  //         kd: "33-24",
+  //         plusMinus: "+9",
+  //         adr: "90.6",
+  //         kast: "75.6%",
+  //         rating: "1.31",
+  //       },
+  //       {
+  //         name: "Munkhbold 'Senzu' Azbayar",
+  //         flag: "mn",
+  //         kd: "40-29",
+  //         plusMinus: "+11",
+  //         adr: "82.2",
+  //         kast: "65.9%",
+  //         rating: "1.25",
+  //       },
+  //       {
+  //         name: "Usukhbayar '910' Banzragch",
+  //         flag: "mn",
+  //         kd: "31-24",
+  //         plusMinus: "+7",
+  //         adr: "86.8",
+  //         kast: "73.2%",
+  //         rating: "1.23",
+  //       },
+  //       {
+  //         name: "Ayush 'mzinho' Batbold",
+  //         flag: "mn",
+  //         kd: "25-28",
+  //         plusMinus: "-3",
+  //         adr: "70.9",
+  //         kast: "61.0%",
+  //         rating: "1.03",
+  //       },
+  //       {
+  //         name: "Sodbayar 'Techno' Munkhbold",
+  //         flag: "mn",
+  //         kd: "17-28",
+  //         plusMinus: "+11",
+  //         adr: "54.0",
+  //         kast: "61.0%",
+  //         rating: "0.75",
+  //       },
+  //     ],
+  //   },
+  //   event: {
+  //     name: "BLAST Open Lisbon 2025",
+  //     date: "23rd of March 2025",
+  //     status: "Match over",
+  //   },
+  //   score: "13:55",
+  //   maps: ["All maps", "Anubis", "Ancient"],
+  // };
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -238,10 +241,10 @@ export default function MatchPage({ params }: Props) {
         </Link>
 
         <MatchHeader
-          team1={matchData.team1}
-          team2={matchData.team2}
+          team1={matchInfo?.team1}
+          team2={matchInfo?.team2}
           score={time}
-          event={{ ...matchData.event, date }}
+          event={{ ...matchInfo?.event, date }}
         />
       </div>
 
@@ -252,8 +255,13 @@ export default function MatchPage({ params }: Props) {
           score: 0,
           name: "Team0",
         }}
-        team2={matchData.team2}
-        maps={matchData.maps}
+        team2={{
+          players: team1,
+          logo: "",
+          score: 0,
+          name: "Team1",
+        }}
+        maps={matchInfo?.maps}
       />
     </div>
   );

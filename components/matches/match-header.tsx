@@ -28,15 +28,15 @@ export default function MatchHeader({ team1, team2, score, event }: MatchHeaderP
         <div className="flex-1 bg-gradient-to-r from-[#1e3a5f] to-[#2d3844] p-6 flex flex-col items-center justify-center">
           <div className="relative w-24 h-24 mb-2">
             <Image
-              src={team1.logo || "/placeholder.svg"}
-              alt={team1.name}
+              src={team1?.logo || "/placeholder.svg"}
+              alt={team1?.name}
               width={80}
               height={80}
               className="rounded-full"
             />
           </div>
-          <h2 className="text-xl font-semibold text-center">{team1.name}</h2>
-          <div className="text-2xl font-bold text-red-500">{team1.score}</div>
+          <h2 className="text-xl font-semibold text-center">{team1?.name}</h2>
+          <div className="text-2xl font-bold text-red-500">{team1?.score}</div>
         </div>
 
         {/* Match Info */}
@@ -53,15 +53,15 @@ export default function MatchHeader({ team1, team2, score, event }: MatchHeaderP
         <div className="flex-1 bg-gradient-to-l from-[#1e3a5f] to-[#2d3844] p-6 flex flex-col items-center justify-center">
           <div className="relative w-24 h-24 mb-2">
             <Image
-              src={team2.logo || "/placeholder.svg"}
-              alt={team2.name}
+              src={team2?.logo || "/placeholder.svg"}
+              alt={team2?.name}
               width={80}
               height={80}
               className="rounded-full"
             />
           </div>
-          <h2 className="text-xl font-semibold text-center">{team2.name}</h2>
-          <div className="text-2xl font-bold text-green-500">{team2.score}</div>
+          <h2 className="text-xl font-semibold text-center">{team2?.name}</h2>
+          <div className="text-2xl font-bold text-green-500">{team2?.score}</div>
         </div>
       </div>
     </div>
