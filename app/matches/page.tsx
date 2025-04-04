@@ -144,7 +144,7 @@ export default function MatchesPage() {
                         ★
                       </span>
                     ))} */}
-                    <span className="text-yellow-400">★★★★★git </span>
+                    <span className="text-yellow-400">★★★★★</span>
                   </div>
                 </div>
               </div>
