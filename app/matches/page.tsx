@@ -137,14 +137,15 @@ export default function MatchesPage() {
                   <span>{"LIVE"}</span>
                 </div>
                 <div className="flex items-center">
-                  {/* <span className="text-sm mr-1">{match.map}</span> */}
-                  {/* <div className="flex">
-                    {Array.from({ length: match.stars }).map((_, i) => (
+                  <span className="text-sm mr-1">{match.match_id}</span>
+                  <div className="flex">
+                    {/* {Array.from({ length: match.stars }).map((_, i) => (
                       <span key={i} className="text-yellow-400">
                         ★
                       </span>
-                    ))}
-                  </div> */}
+                    ))} */}
+                    <span className="text-yellow-400">★★★★★git </span>
+                  </div>
                 </div>
               </div>
 
